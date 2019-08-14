@@ -1,0 +1,192 @@
+ANSWERS:
+
+1.select * from employee order by salary desc LIMIT 3;
+
++------+---------------+--------+--------+------------+
+| e_id | name          | dep_id | salary | manager_id |
++------+---------------+--------+--------+------------+
+| A142 | TARA CUMMINGS | D04    |  99475 | A187       |
+| A132 | PAUL VINCENT  | D01    |  94791 | A120       |
+| A128 | ADAM WAYNE    | D05    |  94324 | A165       |
++------+---------------+--------+--------+------------+
+3 rows in set (0.00 sec)
+
+2.select * from employee order by salary LIMIT 1;
+
++------+-------------+--------+--------+------------+
+| e_id | name        | dep_id | salary | manager_id |
++------+-------------+--------+--------+------------+
+| A111 | JOHN HELLEN | D01    |  15380 | A120       |
++------+-------------+--------+--------+------------+
+1 row in set (0.00 sec)
+
+3.select * from employee where manager_id not in(select e_id from employee e ,dept d where d.dep_id=e.dep_id);
+
++------+-----------------+--------+--------+------------+
+| e_id | name            | dep_id | salary | manager_id |
++------+-----------------+--------+--------+------------+
+| A120 | TIM ARCHER      | D01    |  48834 | A298       |
+| A165 | NATASHA STEVENS | D05    |  31377 | A298       |
+| A178 | BRUCE WILLS     | D03    |  66861 | A298       |
+| A180 | ROBERT SWIFT    | D04    |  27700 | A298       |
+| A187 | ADAM JUSTIN     | D02    |  80543 | A298       |
++------+-----------------+--------+--------+------------+
+5 rows in set (0.00 sec)
+
+4. select * from employee where name in(select d.dep_manager from employee e,dept d where d.dep_id=e.dep_id);
+
++------+-----------------+--------+--------+------------+
+| e_id | name            | dep_id | salary | manager_id |
++------+-----------------+--------+--------+------------+
+| A120 | TIM ARCHER      | D01    |  48834 | A298       |
+| A165 | NATASHA STEVENS | D05    |  31377 | A298       |
+| A178 | BRUCE WILLS     | D03    |  66861 | A298       |
+| A180 | ROBERT SWIFT    | D04    |  27700 | A298       |
+| A187 | ADAM JUSTIN     | D02    |  80543 | A298       |
++------+-----------------+--------+--------+------------+
+5 rows in set (0.00 sec)
+
+5.select * from employee where salary=(select min(salary) from employee where e_id in(select manager_id from employee));
++------+-----------------+--------+--------+------------+
+| e_id | name            | dep_id | salary | manager_id |
++------+-----------------+--------+--------+------------+
+| A165 | NATASHA STEVENS | D05    |  31377 | A298       |
++------+-----------------+--------+--------+------------+
+1 row in set (0.00 sec)
+
+6.select count(*) as employee_count,dep_name from employee e join dept d on e.dep_id=d.dep_id where dep_name='COMMUNICATIONS';
+
++----------------+----------------+
+| employee_count | dep_name       |
++----------------+----------------+
+|              6 | COMMUNICATIONS |
++----------------+----------------+
+1 row in set (0.00 sec)
+
+7.select * from employee e join dept d on e.dep_id=d.dep_id where dep_name='FINANCE' and salary in(select max(salary) from employee group by dep_id);
+
++------+------------+--------+--------+------------+--------+----------+-----------------+
+| e_id | name       | dep_id | salary | manager_id | dep_id | dep_name | dep_manager     |
++------+------------+--------+--------+------------+--------+----------+-----------------+
+| A128 | ADAM WAYNE | D05    |  94324 | A165       | D05    | FINANCE  | NATASHA STEVENS |
++------+------------+--------+--------+------------+--------+----------+-----------------+
+1 row in set (0.00 sec)
+
+8. select * from employee e join dept d on e.dep_id=d.dep_id where dep_name='PRODUCT' and salary in(select min(salary) from employee group by dep_id);
++------+-------------+--------+--------+------------+--------+----------+-------------+
+| e_id | name        | dep_id | salary | manager_id | dep_id | dep_name | dep_manager |
++------+-------------+--------+--------+------------+--------+----------+-------------+
+| A156 | NICK MARTIN | D03    |  50174 | A178       | D03    | PRODUCT  | BRUCE WILLS |
++------+-------------+--------+--------+------------+--------+----------+-------------+
+1 row in set (0.00 sec)
+
+9.select count(*) as employeecount from employee where (salary,dep_id)=(select max(salary),d.dep_id from employee e join dept d on e.dep_id=d.dep_id where dep_name='HEALTH');
+
++---------------+
+| employeecount |
++---------------+
+|             1 |
++---------------+
+1 row in set (0.00 sec)
+
+10.select * from employee where manager_id in(select e_id from employee where name='NATASHA STEVENS');
++------+----------------+--------+--------+------------+
+| e_id | name           | dep_id | salary | manager_id |
++------+----------------+--------+--------+------------+
+| A128 | ADAM WAYNE     | D05    |  94324 | A165       |
+| A129 | JOSEPH ANGELIN | D05    |  44280 | A165       |
++------+----------------+--------+--------+------------+
+2 rows in set (0.00 sec)
+
+
+11.select e.name,count(*) as emp_countofhealth,d.dep_name,e.manager_id from employee e join dept d ON e.dep_id=d.dep_id where dep_name='HEALTH';
++-------------+-------------------+----------+------------+
+| name        | emp_countofhealth | dep_name | manager_id |
++-------------+-------------------+----------+------------+
+| JOHN HELLEN |                 6 | HEALTH   | A120       |
++-------------+-------------------+----------+------------+
+1 row in set (0.00 sec)
+
+
+12.select e.manager_id,d.dep_id,e.e_id from employee e join dept d ON e.dep_id=d.dep_id where dep_name='COMMUNICATIONS' ;
++------------+--------+------+
+| manager_id | dep_id | e_id |
++------------+--------+------+
+| A187       | D02    | A116 |
+| A187       | D02    | A121 |
+| A187       | D02    | A133 |
+| A298       | D02    | A187 |
+| A187       | D02    | A194 |
+| A187       | D02    | A198 |
++------------+--------+------+
+6 rows in set (0.00 sec)
+
+
+13.select avg(salary)as avg_salary,dep_name from employee e join dept d on e.dep_id=d.dep_id group by d.dep_name;
++------------+----------------+
+| avg_salary | dep_name       |
++------------+----------------+
+| 54527.6667 | HEALTH         |
+| 48271.3333 | COMMUNICATIONS |
+| 58517.5000 | PRODUCT        |
+| 51913.3333 | INSURANCE      |
+| 56660.3333 | FINANCE        |
++------------+----------------+
+5 rows in set (0.00 sec)
+
+
+14. select sum(salary) as total_salary from employee where dep_id in (Select distinct dep_id from dept where dep_name='FINANCE');
++--------------+
+| total_salary |
++--------------+
+|       169981 |
++--------------+
+1 row in set (0.00 sec)
+
+15.select d.dep_id,d.dep_name,sum(e.salary) total from employee e join dept d on e.dep_id=d.dep_id group by d.dep_id,d.dep_name order by total limit 1;
+
++--------+----------+--------+
+| dep_id | dep_name | total  |
++--------+----------+--------+
+| D03    | PRODUCT  | 117035 |
++--------+----------+--------+
+1 row in set (0.00 sec)
+
+16.select count(*) as emp_count,dep_name from employee e,dept d where e.dep_id=d.dep_id group by dep_name;
++-----------+----------------+
+| emp_count | dep_name       |
++-----------+----------------+
+|         6 | HEALTH         |
+|         6 | COMMUNICATIONS |
+|         2 | PRODUCT        |
+|         3 | INSURANCE      |
+|         3 | FINANCE        |
++-----------+----------------+
+5 rows in set (0.00 sec)
+
+17.select count(*) as emp_count,dep_name from employee e,dept d where e.dep_id=d.dep_id and salary<10000 group by dep_name;
+Empty set (0.00 sec)
+
+18. select count(*) as emp_count,dep_id from employee where dep_id='D04';
++-----------+--------+
+| emp_count | dep_id |
++-----------+--------+
+|         3 | D04    |
++-----------+--------+
+1 row in set (0.00 sec)
+
+19. select max(count),dep_name,dep_id,dep_manager from(select count(*) as count,d.dep_name,d.dep_id,d.dep_manager from employee e join dept d on d.dep_id=e.dep_id group by e.dep_id) t;
+
++------------+----------+--------+-------------+
+| max(count) | dep_name | dep_id | dep_manager |
++------------+----------+--------+-------------+
+|          6 | HEALTH   | D01    | TIM ARCHER  |
++------------+----------+--------+-------------+
+1 row in set (0.00 sec)
+
+20.select * from employee where manager_id in(select e_id from employee where name='TIM COOK');
+Empty set (0.00 sec)
+
+
+
+
